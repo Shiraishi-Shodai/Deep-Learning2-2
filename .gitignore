@@ -1,0 +1,4 @@
+.venv
+.vscode
+ch05_test/audio_dataset_3class/*
+todai/*

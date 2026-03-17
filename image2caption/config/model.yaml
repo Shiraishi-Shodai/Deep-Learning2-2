@@ -1,0 +1,53 @@
+encoder:
+  conv1:
+    in_channels: 3
+    out_channels: 16
+    kernel_size: 3
+    stride: 1
+    padding: 1
+  pool1:
+    kernel_size: 2
+    stride: 1
+
+  conv2:
+    in_channels: 16
+    out_channels: 5
+    kernel_size: 5
+    stride: 1
+    padding: 1
+  pool2:
+    kernel_size: 2
+    stride: 1
+
+  conv3:
+    in_channels: 5
+    out_channels: 3
+    kernel_size: 8
+    stride: 1
+    padding: 1
+  pool3:
+    kernel_size: 2
+    stride: 1
+
+bridge:
+  in_features: 128
+  out_features: 64
+  linear_bias: true
+
+decoder:
+  embedding:
+    num_embeddings: 1000
+    embedding_dim: 256
+
+  lstm:
+    input_size: 256
+    hidden_size: 512
+    num_layers: 2
+    bias: true
+    batch_first: true
+    dropout: 0.1
+
+  linear:
+    in_features: 512
+    out_features: 1000
+    bias: true

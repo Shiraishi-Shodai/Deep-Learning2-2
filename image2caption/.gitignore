@@ -1,0 +1,24 @@
+# Data
+data/
+*.csv
+*.txt
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+env/
+venv/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+
+# Experiments
+experiments/
+outputs/
+
+# Ruff
+.ruff_cache/

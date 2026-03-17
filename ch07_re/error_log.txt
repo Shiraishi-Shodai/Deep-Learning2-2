@@ -1,0 +1,24 @@
+[92m------------------------------------------------------------[0m
+Traceback (most recent call last):
+                       [92mGPU Mode (cupy)[0m
+[92m------------------------------------------------------------[0m
+
+  File "C:\Users\siran\ML\Deep-Learning2\ch07_re\train_seq2seq.py", line 65, in <module>
+    trainer.fit(x_train, t_train, max_epoch=1, batch_size=batch_size, max_grad=max_grad)
+  File "C:\Users\siran\ML\Deep-Learning2\ch07_re\..\common\trainer.py", line 39, in fit
+    loss = model.forward(batch_x, batch_t)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\siran\ML\Deep-Learning2\ch07_re\seq2seq.py", line 109, in forward
+    h = self.encoder.forward(xs)
+        ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\siran\ML\Deep-Learning2\ch07_re\seq2seq.py", line 25, in forward
+    xs = self.embed.forward(xs)
+         ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\siran\ML\Deep-Learning2\ch07_re\..\common\time_layers.py", line 244, in forward
+    out[:, t, :] = layer.forward(xs[:, t])
+                   ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\siran\ML\Deep-Learning2\ch07_re\..\common\layers.py", line 183, in forward
+    target_W = W[self.index]
+               ~^^^^^^^^^^^^
+  File "cupy\\_core\\core.pyx", line 1581, in cupy._core.core._ndarray_base.__array__
+TypeError: Implicit conversion to a NumPy array is not allowed. Please use `.get()` to construct a NumPy array explicitly.

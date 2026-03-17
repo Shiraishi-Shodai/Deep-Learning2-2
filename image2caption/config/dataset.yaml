@@ -1,0 +1,6 @@
+DATA_DIR: "C:/Users/siran/.cache/kagglehub/datasets/adityajn105/flickr8k/versions/1"
+
+PATHS:
+  IMAGES: "Images"
+  CAPTIONS: "captions.csv"
+  WORD_DICT: "word_dict.csv"
