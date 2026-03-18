@@ -17,25 +17,46 @@ import japanize_matplotlib
 import re
 sys.path.append(str(Path(__file__).resolve().parents[2]))
 from src.utils.data import load_yaml, CustomDataset
-
-print(sys.path)
-
+from src.models.model import Encoder
+from torch.optim import Adam, SGD
 
 def main():
-    DATASET_YAML = 'dataset.yaml'
-    TRAIN_YAML = 'train.yaml'
 
 #######################
 # yamlの読み込み
 #######################
+    DATASET_YAML = 'dataset.yaml'
+    TRAIN_YAML = 'train.yaml'
+    MODEL_YAML = 'model.yaml'
 
     dataset_config = load_yaml(f"./config/{DATASET_YAML}")
+
     DATA_DIR = dataset_config["DATA_DIR"]
     IMAGES_DIR = rf"{dataset_config['DATA_DIR']}/{dataset_config['PATHS']["IMAGES"]}"
     CAPTIONS_CSV = rf"{dataset_config['DATA_DIR']}/{dataset_config['PATHS']["CAPTIONS"]}"
     WORD_DICT_CSV = rf"{dataset_config['DATA_DIR']}/{dataset_config['PATHS']["WORD_DICT"]}"
 
     train_config = load_yaml(f"./config/{TRAIN_YAML}")
+    TEST_SIZE = train_config["TEST_SIZE"]
+    BATCH_SIZE = train_config["BATCH_SIZE"]
+    SHOW_SCORE_INVTERVAL = train_config["SHOW_SCORE_INVTERVAL"]
+    MAX_EPOCH = train_config["MAX_EPOCH"]
+    LR = train_config["LR"]
+
+    model_config = load_yaml(f"./config/{MODEL_YAML}")
+    encoder_config = model_config["encoder"]
+
+    encoder = Encoder(encoder_config)
+    optim = SGD(
+        encoder.parameters(),
+        lr=LR
+    )
+
+
+#######################
+# その他変数定義
+#######################
+    
 
 
 #######################
@@ -63,8 +84,10 @@ def main():
 #######################
 # 学習
 #######################
-    for i, (image, caption) in enumerate(train_dataloader):
-        print(f"{i+1}回目 {image.shape, len(caption)}")
+
+    for i, (images, caption) in enumerate(train_dataloader):
+        Encoder.forward(images)
+        
         
 
 if __name__ == "__main__":

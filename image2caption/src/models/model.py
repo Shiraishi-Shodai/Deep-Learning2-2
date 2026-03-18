@@ -18,12 +18,12 @@ class Encoder(nn.Module):
         self.pool3 = nn.MaxPool2d(**encoder_cfg["pool3"])
 
     def forward(self, xs):
-        encode_out = self.conv1.forward(xs)
-        encode_out = self.pool1.forward(encode_out)
-        encode_out = self.conv2.forward(encode_out)
-        encode_out = self.pool2.forward(encode_out)
-        encode_out = self.conv3.forward(encode_out)
-        encode_out = self.pool3.forward(encode_out)
+        encode_out = self.conv1(xs)
+        encode_out = self.pool1(encode_out)
+        encode_out = self.conv2(encode_out)
+        encode_out = self.pool2(encode_out)
+        encode_out = self.conv3(encode_out)
+        encode_out = self.pool3(encode_out)
 
         return encode_out
     
@@ -41,13 +41,13 @@ class Encoder(nn.Module):
 class Bridge(nn.Module):
     """CNNとLSTMの間を取り持つ
     """
-    def __init__(self, encoder_cfg):
+    def __init__(self, bridge_cfg):
         super().__init__()
-        self.linear = nn.Linear(in_features=in_features, out_features=out_features, bias=linear_bias)
+        self.linear = nn.Linear(**bridge_cfg)
         self.relu = nn.ReLU()
     
     def forward(self, encode_out):
-        bridge_out = self.linear.forward(encode_out)
+        bridge_out = self.linear(encode_out)
         bridge_out = self.relu(bridge_out)
         
         return bridge_out
@@ -60,16 +60,16 @@ class Bridge(nn.Module):
     
 
 class Decoder(nn.Module):
-    def __init__(self, num_embeddings, embedding_dim, input_size, hidden_size, num_layers, lstm_bias, batch_first, dropout, in_features, out_features, linear_bias):
+    def __init__(self, decoder_cfg):
         super().__init__()
-        self.embedding = nn.Embedding(num_embeddings=num_embeddings, embedding_dim=embedding_dim)
-        self.lstm = nn.LSTM(input_size=input_size, hidden_size=hidden_size, num_layers=num_layers, bias=lstm_bias, batch_first=batch_first, dropout=dropout)
-        self.linear = nn.Linear(in_features=in_features, out_features=out_features, bias=linear_bias)
+        self.embedding = nn.Embedding(**decoder_cfg["embedding"])
+        self.lstm = nn.LSTM(**decoder_cfg["lstm"])
+        self.linear = nn.Linear(**decoder_cfg["linear"])
     
-    def forward(self, bridge_out):
-        decoder_out = self.embedding.forward(bridge_out)
-        decoder_out = self.lstm.forward(decoder_out)
-        decoder_out = self.linear.forward(decoder_out)
+    def forward(self, xs, h):
+        decoder_out = self.embedding(bridge_out)
+        decoder_out = self.lstm(decoder_out)
+        decoder_out = self.linear(decoder_out)
 
         return decoder_out
     
@@ -79,3 +79,44 @@ class Decoder(nn.Module):
         bridge_dout = self.embedding.backward(decoder_dout)
 
         return bridge_dout
+
+    
+    def generate(self, h, start_id, sample_size, h0):
+
+        sampled = []
+        sample_id = start_id
+
+        c0 = torch.zeros_like(h0)
+
+        for _ in range(sample_size):
+            x = torch.tensor(sample_id).reshape(1, 1)
+            decoder_out = self.embedding(sample_id, (h0, c0))
+            decoder_out = self.lstm(decoder_out)
+            score = self.linear(decoder_out)
+
+            sample_id = int(torch.argmax(score.flatten()))
+
+            sampled.append(sample_id)
+        
+        return sampled
+
+
+class Seq2seq(nn.Module):
+    def __init__(self, encoder_cfg, bridge_cfg, decoder_cfg):
+        self.encoder = Encoder(encoder_cfg)
+        self.bridge = Bridge(bridge_cfg)
+        self.decoder = Decoder(decoder_cfg)
+
+    def forward(self, xs):
+        encoder_out = self.encoder.forward(xs)
+        h = self.bridge.forward(encoder_out)
+        out = self.decoder.forward(h)
+
+        return out
+
+    def backward(self, dout):
+        decoder_dout = self.decoder.backward(dout)
+        bridge_dout = self.bridge.backward(decoder_dout)
+        dxs = self.encoder.backward(bridge_dout)
+
+        return dxs

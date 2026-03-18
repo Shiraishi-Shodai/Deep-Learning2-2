@@ -17,18 +17,3 @@ from sklearn.model_selection import train_test_split
 import kagglehub
 
 
-# =================================
-# read csv data
-# =================================
-path = r"C:\Users\siran\.cache\kagglehub\datasets\adityajn105\flickr8k\versions\1"
-data_file_path = Path(rf'{path}\captions.csv')
-dict_path = Path(rf'{path}\word_dict.csv')
-data = pl.read_csv(str(data_file_path))
-
-word_dataframe = pl.read_csv(str(dict_path))
-print(data.describe())
-print(word_dataframe.describe())
-
-# =================================
-# DataLoaderの取得
-# =================================
