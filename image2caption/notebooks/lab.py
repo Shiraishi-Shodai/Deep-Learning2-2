@@ -11,7 +11,7 @@ import polars as pl
 from matplotlib import pyplot as plt
 import csv
 import cv2
-from common.np import *
+# from common.np import *
 from torch.nn import functional as F
 import torch
 
@@ -21,12 +21,12 @@ import torch
 
 # print(a)
 
-df = pl.DataFrame(
-    {
-        "id": [1, 2, 3],
-        "word": ["a", "b", "c"],
-    }
-)
+# df = pl.DataFrame(
+#     {
+#         "id": [1, 2, 3],
+#         "word": ["a", "b", "c"],
+#     }
+# )
 
 
 # mask = np.array([True, False, True])
@@ -53,8 +53,8 @@ df = pl.DataFrame(
 # 1. テキストファイルをcsvファイルに変換
 # =================================
 
-text_file_path = Path(rf'{path}\captions.txt')
-csv_file_path = Path(rf'{path}\captions.csv')
+# text_file_path = Path(rf'{path}\captions.txt')
+# csv_file_path = Path(rf'{path}\captions.csv')
 
 def txt2csv(text_file_path, csv_file_path):
     with open(text_file_path, 'r', encoding='utf-8') as f:
@@ -113,3 +113,8 @@ def txt2csv(text_file_path, csv_file_path):
 # ax.imshow(img)
 # ax.set_axis_off()
 # plt.show()
+
+
+# a = 40455
+# print(a * 0.1)
+# print(a * 0.8)

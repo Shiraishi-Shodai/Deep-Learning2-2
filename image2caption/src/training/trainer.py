@@ -15,5 +15,46 @@ from torch.nn import functional as F
 import torch
 from sklearn.model_selection import train_test_split
 import kagglehub
+from utils.device import get_device
 
 
+class Trainer:
+    def __init__(self, config):
+        self.device = get_device(config)
+        self.model = Model().to(self.device)
+    
+    def train(self):
+        for epoch in range(self.ecpochs):
+            self.train_one_epoch()
+            self.validate()
+    
+    def train_one_epoch(self):
+        self.model.train()
+
+        for batch in self.dataloader:
+            x, y = batch
+            x, y = x.to(self.device), y.to(self.device)
+
+            output = self.model(x)
+            loss = self.criterion(output, y)
+
+            self.optimizer.zero_grad()
+            loss.backward()
+            self.optimizer.step()
+    
+    def validate(self):
+        self.model.eval()
+
+        # 勾配計算を行わない
+        with torch.no_grad():
+            for batch in self.val_loader:
+                pass
+            
+    def save(self, path):
+        torch.save(self.model.state_dict(), path)
+    
+    def load(self, path):
+        self.model.load_state_dict(torch.load(path))
+
+    def log(self, loss):
+        print(loss)

@@ -4,3 +4,4 @@ PATHS:
   IMAGES: "Images"
   CAPTIONS: "captions.csv"
   WORD_DICT: "word_dict.csv"
+  
