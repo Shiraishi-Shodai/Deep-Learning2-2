@@ -19,9 +19,15 @@ from utils.device import get_device
 
 
 class Trainer:
-    def __init__(self, config):
+    def __init__(self, model, train_loader, validate_loader, criterion, optimizer, config):
+        self.train_loader = train_loader
+        self.validate_loader = validate_loader
+        self.criterion = criterion
+        self.optimizer = optimizer
+        self.config = config
         self.device = get_device(config)
-        self.model = Model().to(self.device)
+        # モデルの重みをcudaで使用する
+        self.model = model.to(self.device)
     
     def train(self):
         for epoch in range(self.ecpochs):
